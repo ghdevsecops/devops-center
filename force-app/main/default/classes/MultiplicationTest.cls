@@ -1,10 +1,9 @@
 @isTest
 public class MultiplicationTest {
-    // Test method for multiplying integers
     @isTest
     static void testMultiplyIntegers() {
         Integer  result1 = Multiplication.multiplyIntegers(3, 5);
-        System.assertEquals(15, result, 'Multiplication of 3 and 5 should be 15 in total value');
+        System.assertEquals(15, result, 'the result is 15 in total');
         //first check
         result1 =  Multiplication.multiplyIntegers(-3, 5);  //first check
         System.assertEquals(-15, result1, 'Multiplication of -3 & 5 will be -15 in total value');
