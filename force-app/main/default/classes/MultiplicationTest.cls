@@ -3,7 +3,7 @@ public class MultiplicationTest {
     @isTest
     static void testMultiplyIntegers() {
         Integer  result1 = Multiplication.multiplyIntegers(3, 5);
-        System.assertEquals(15, result, 'the result is 15 in total');
+        System.assertEquals(15, result1, 'the result is 15 in total');
         //first check
         result1 =  Multiplication.multiplyIntegers(-3, 5);  //first check
         System.assertEquals(-15, result1, 'Multiplication of -3 & 5 will be -15 in total value');
