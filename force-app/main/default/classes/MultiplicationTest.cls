@@ -1,5 +1,18 @@
 @isTest
 public class MultiplicationTest {
+    // Test method for multiplying integers
+    @isTest
+    static void testMultiplyIntegers() {
+        //multiplication of two numbers
+        Integer  result = Multiplication.multiplyIntegers(3, 5);
+        System.assertEquals(15, result, 'Multiplication of 3 and 5 should be 15 in total value');
+        //first check
+        result =  Multiplication.multiplyIntegers(-3, 5);  //first check
+        System.assertEquals(-15, result, 'Multiplication of -3 & 5 will be -15 in total value');
+        //second check
+        result =  Multiplication.multiplyIntegers(0, 11); //second check
+        System.assertEquals(0, result, 'Multiplication of 0 and 10 should be 0');
+    }
     // Test method for multiplying decimals
     /*
     @isTest
@@ -17,19 +30,7 @@ public class MultiplicationTest {
         System.assertEquals(0.0, result, 'Multiplication of 0.0 and 5.5 should be 0.0');
     }
     */
-    // Test method for multiplying integers
-    @isTest
-    static void testMultiplyIntegers() {
-        //multiplication of two numbers
-        Integer  result = Multiplication.multiplyIntegers(3, 5);
-        System.assertEquals(15, result, 'Multiplication of 3 and 5 should be 15 in total');
-        //first check
-        result =  Multiplication.multiplyIntegers(-3, 5);  //first check
-        System.assertEquals(-15, result, 'Multiplication of -2 and 5 should be -10');
-        //second check
-        result =  Multiplication.multiplyIntegers(0, 11); //second check
-        System.assertEquals(0, result, 'Multiplication of 0 and 10 should be 0');
-    }
+    
 
    
 }
