@@ -1,7 +1,7 @@
 public class Addition {
-    // Method to add two numbers
-    public static Integer addNumbers(Integer num1, Integer num2) {
-        return num1 + num2;
-        //testing once again5 and sample pull
+    // Method to add two nums to get proper result
+    public static Integer addNumbers(Integer number1, Integer number2) {
+        return number1 + number2;
+        //testing once today again
     }
 }
