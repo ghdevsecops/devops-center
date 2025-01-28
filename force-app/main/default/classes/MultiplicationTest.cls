@@ -5,15 +5,15 @@ public class MultiplicationTest {
     @isTest
     static void testMultiplyIntegers() {
         //multiplication of two numbers
-        Integer result = Multiplication.multiplyIntegers(3, 4);
+        Integer  result = Multiplication.multiplyIntegers(3, 5);
         System.assertEquals(12, result, 'Multiplication of 3 and 4 should be 12');
         
         //first check
-        result = Multiplication.multiplyIntegers(-2, 5);
+        result =  Multiplication.multiplyIntegers(-3, 5);
         System.assertEquals(-10, result, 'Multiplication of -2 and 5 should be -10');
         
         //second check
-        result = Multiplication.multiplyIntegers(0, 10);
+        result =  Multiplication.multiplyIntegers(0, 11);
         System.assertEquals(0, result, 'Multiplication of 0 and 10 should be 0');
     }
 
