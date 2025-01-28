@@ -22,7 +22,7 @@ public class MultiplicationTest {
     static void testMultiplyIntegers() {
         //multiplication of two numbers
         Integer  result = Multiplication.multiplyIntegers(3, 5);
-        System.assertEquals(15, result, 'Multiplication of 3 and 4 should be 12');
+        System.assertEquals(15, result, 'Multiplication of 3 and 5 should be 15 in total');
         //first check
         result =  Multiplication.multiplyIntegers(-3, 5);  //first check
         System.assertEquals(-15, result, 'Multiplication of -2 and 5 should be -10');
