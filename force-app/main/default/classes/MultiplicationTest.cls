@@ -12,7 +12,7 @@ public class MultiplicationTest {
         System.assertEquals(0, result1, 'Multiplication of 0 and 10 should be 0');
     }
     // Test method for multiplying decimals
-    /*
+    
     @isTest
     static void testMultiplyDecimals() {
         //multiplication of demcimals
@@ -26,9 +26,5 @@ public class MultiplicationTest {
         //second check
         result = Multiplication.multiplyDecimals(0.0, 5.5);
         System.assertEquals(0.0, result, 'Multiplication of 0.0 and 5.5 should be 0.0');
-    }
-    */
-    
-
-   
+    }   
 }
