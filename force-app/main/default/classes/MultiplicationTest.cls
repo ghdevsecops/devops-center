@@ -3,15 +3,14 @@ public class MultiplicationTest {
     // Test method for multiplying integers
     @isTest
     static void testMultiplyIntegers() {
-        //multiplication of two numbers
-        Integer  result = Multiplication.multiplyIntegers(3, 5);
+        Integer  result1 = Multiplication.multiplyIntegers(3, 5);
         System.assertEquals(15, result, 'Multiplication of 3 and 5 should be 15 in total value');
         //first check
-        result =  Multiplication.multiplyIntegers(-3, 5);  //first check
-        System.assertEquals(-15, result, 'Multiplication of -3 & 5 will be -15 in total value');
+        result1 =  Multiplication.multiplyIntegers(-3, 5);  //first check
+        System.assertEquals(-15, result1, 'Multiplication of -3 & 5 will be -15 in total value');
         //second check
-        result =  Multiplication.multiplyIntegers(0, 11); //second check
-        System.assertEquals(0, result, 'Multiplication of 0 and 10 should be 0');
+        result1 =  Multiplication.multiplyIntegers(0, 11); //second check
+        System.assertEquals(0, result1, 'Multiplication of 0 and 10 should be 0');
     }
     // Test method for multiplying decimals
     /*
