@@ -28,7 +28,7 @@ jobs:
         with:
           run-command: run
           run-arguments: --engine pmd,eslint --normalize-severity --target force-app/main/default --outfile results.html
-          results-artifact-name: salesforce-code-analyzer-results
+          results-artifact-name: salesforce-code-analyzer1-results
 
       - name: Check the outputs to determine whether to fail
         if: |
@@ -54,7 +54,7 @@ jobs:
         uses: forcedotcom/run-code-analyzer@v2
         with:
           run-arguments: --workspace force-app/main/default --view detail --output-file sfca_results.html --output-file sfca_results.json
-          results-artifact-name: salesforce-code-analyzer-results
+          results-artifact-name: salesforce-code-analyzer2-results
 
       - name: Check the outputs to determine whether to fail
         if: |
