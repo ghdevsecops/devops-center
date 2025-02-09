@@ -10,7 +10,7 @@ on:
     paths:
       - "force-app/main/default/**"
 jobs:
-  salesforce-code-analyzer-workflow:
+  salesforce-code-analyzer:
     runs-on: ubuntu-latest
     steps:
       - name: Check out files
