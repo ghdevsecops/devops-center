@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 
 export default class MyComponent extends LightningElement {
-    message = 'Hello, world!'; // Unused variable might be flagged by PMD or ESLint for redundancy
+    message = 'Hello, world!'; // Unused variable might be flagged by PMD or ESLint for redundancy test
     
     constructor() {
         super();
