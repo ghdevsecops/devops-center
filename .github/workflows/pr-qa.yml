@@ -34,7 +34,7 @@ jobs:
       - name: Fetch Delta and Destructive Changes
         shell: bash
         run: |
-          #!/bin/bash
+          
           git branch
           git diff --diff-filter=AMR --name-only origin/qa..origin/WI-100001 -- force-app/
           git diff --diff-filter=D --name-only origin/qa..origin/WI-100001 -- force-app/
