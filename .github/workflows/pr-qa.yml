@@ -40,7 +40,7 @@ jobs:
 
       - name: QA Validation
         run: |
-          #!/bin/bash
+          #!/bin/sh
           # Initialize an empty string to hold the test class names
           test_classes_string=""
           # Flag to track if any test class is missing
