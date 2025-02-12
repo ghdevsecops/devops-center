@@ -51,7 +51,7 @@ jobs:
           # Read the class names from all-apex-class.txt
           while IFS= read -r class || [ -n "$class" ]; do
               # Check if the class name already ends with 'Test'
-              if [[ "$class" == *Test ]]; then
+              if [ "$class" == *Test ]; then
                   # Directly append the test class name to the string
                   test_classes_string+="${class} "
                   echo "If Test Class String = $test_classes_string"
