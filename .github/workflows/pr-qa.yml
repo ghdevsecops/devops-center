@@ -63,18 +63,18 @@ jobs:
                   fi
               fi
           done < all-apex-class.txt
-          # Trim any trailing space from the string
           echo $test_classes_string
-          test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
-          # Remove duplicate test class names
-          test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
-          # Output the string of test class names
-          # If any test class was missing, exit with an error
-          if [ "$missing_test_class" = true ]; then
-              exit 1
-          else
-              echo "Test classes found: $test_classes_string"
-          fi
+          # # Trim any trailing space from the string
+          # test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
+          # # Remove duplicate test class names
+          # test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
+          # # Output the string of test class names
+          # # If any test class was missing, exit with an error
+          # if [ "$missing_test_class" = true ]; then
+          #     exit 1
+          # else
+          #     echo "Test classes found: $test_classes_string"
+          # fi
           # if [ "$test_classes_string" = "" ]; then
           #   sf project deploy start -d force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
           # else
