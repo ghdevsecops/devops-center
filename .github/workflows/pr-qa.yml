@@ -29,7 +29,7 @@ jobs:
 
       - name: QA Authorization
         run: |
-          echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -
+          echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -u
       
       - name: Fetch Apex Class Names
         run: |
