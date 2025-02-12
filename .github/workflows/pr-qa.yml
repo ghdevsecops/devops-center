@@ -31,10 +31,48 @@ jobs:
         run: |
           echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -u
       
+      - name: Fetch Delta and Destructive Changes
+        shell: bash
+        run: |
+          #!/bin/bash
+          git diff --diff-filter=AMR --name-only qa..WI-100001 -- force-app/
+          git diff --diff-filter=D --name-only qa..WI-100001 -- force-app/
+
+          # Create a new folder to store the changed files
+          mkdir -p package
+          mkdir -p destructive
+
+          # Copy the changed files into the new folder, preserving directory structure
+
+          git diff  --diff-filter=AMR --name-only qa..WI-100001 -- force-app/ | xargs -I {} cp --parents {} package/
+
+          # Step 1: Get deleted files
+          git diff --name-only --diff-filter=D qa..WI-100001 -- force-app/ > deleted_files.txt
+
+          # Step 2: Get renamed files
+          git diff --name-status qa..WI-100001 -- force-app/ | grep -E "^R" > renamed_files.txt
+
+          # Step 3: Handle renamed files (create placeholders for the old file paths)
+          cat renamed_files.txt | while read line; do
+              old_file=$(echo $line | awk '{print $2}')
+              # Create the folder structure if it doesn't exist
+              mkdir -p "destructive/$(dirname $old_file)"
+              # Create the placeholder file
+              touch "destructive/$old_file"
+          done
+
+          # Step 4: Handle deleted files (create placeholders for deleted files)
+          cat deleted_files.txt | while read line; do
+              # Create the folder structure if it doesn't exist
+              mkdir -p "destructive/$(dirname $line)"
+              # Create the placeholder file
+              touch "destructive/$line"
+          done
+
       - name: Fetch Apex Class Names
         run: |
-          find force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
-          find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
+          find package/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
+          find packageforce-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
           chmod 777 all-apex-class.txt only-apex-test-class.txt
           ls
 
