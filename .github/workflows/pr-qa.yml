@@ -35,6 +35,7 @@ jobs:
         run: |
           find force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
+          chmod 777 all-apex-class.txt only-apex-test-class.txt
 
       - name: QA Validation
         run: |
@@ -52,8 +53,8 @@ jobs:
               else
                   # Construct the expected test class name
                   test_class="${class}Test"
-                  # Check if the test class exists in only-apex-test-class.txt
-                  if grep -q "^${test_class}$" only-apex-test-class.txt; then
+                  # Check if the test class exists in only-apex-class.txt
+                  if grep -q "^${test_class}$" only-apex-class.txt; then
                       # Append the test class name to the string
                       test_classes_string+="${test_class} "
                   else
@@ -74,6 +75,8 @@ jobs:
           else
               echo "Test classes found: $test_classes_string"
           fi
+
+
           if [ "$test_classes_string" = "" ]; then
             sf project deploy start -d force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
           else
