@@ -29,7 +29,12 @@ jobs:
 
       - name: QA Authorization
         run: |
-          echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -u
+          echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -
+      
+      - name: Fetch Apex Class Names
+        run: |
+          find force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
+          find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
 
       - name: QA Validation
         run: |
@@ -38,7 +43,7 @@ jobs:
           test_classes_string=""
           # Flag to track if any test class is missing
           missing_test_class=false
-          # Read the class names from file1.txt
+          # Read the class names from all-apex-class.txt
           while IFS= read -r class || [ -n "$class" ]; do
               # Check if the class name already ends with 'Test'
               if [[ "$class" == *Test ]]; then
@@ -47,8 +52,8 @@ jobs:
               else
                   # Construct the expected test class name
                   test_class="${class}Test"
-                  # Check if the test class exists in file2.txt
-                  if grep -q "^${test_class}$" file2.txt; then
+                  # Check if the test class exists in only-apex-test-class.txt
+                  if grep -q "^${test_class}$" only-apex-test-class.txt; then
                       # Append the test class name to the string
                       test_classes_string+="${test_class} "
                   else
@@ -56,7 +61,7 @@ jobs:
                       missing_test_class=true
                   fi
               fi
-          done < file1.txt
+          done < all-apex-class.txt
           # Trim any trailing space from the string
           test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
           # Remove duplicate test class names
