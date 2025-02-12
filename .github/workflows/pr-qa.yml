@@ -10,7 +10,75 @@ on:
     paths:
       - "force-app/main/default/**"
 jobs:
-  salesforce-code-analyzer1:
+  validation-with-code-coverage:
+    name: Validation with Apex Code Coverage
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    container:
+      image: salesforce/cli:latest-full
+
+    env:
+      SOURCE_BRANCH: ${{ github.head_ref }}
+      TARGET_BRANCH: ${{ github.base_ref }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: QA Authorization
+        run: |
+          echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -u
+
+      - name: QA Validation
+        run: |
+          #!/bin/bash
+          # Initialize an empty string to hold the test class names
+          test_classes_string=""
+          # Flag to track if any test class is missing
+          missing_test_class=false
+          # Read the class names from file1.txt
+          while IFS= read -r class || [ -n "$class" ]; do
+              # Check if the class name already ends with 'Test'
+              if [[ "$class" == *Test ]]; then
+                  # Directly append the test class name to the string
+                  test_classes_string+="${class} "
+              else
+                  # Construct the expected test class name
+                  test_class="${class}Test"
+                  # Check if the test class exists in file2.txt
+                  if grep -q "^${test_class}$" file2.txt; then
+                      # Append the test class name to the string
+                      test_classes_string+="${test_class} "
+                  else
+                      echo "Error: Test class for ${class} is missing."
+                      missing_test_class=true
+                  fi
+              fi
+          done < file1.txt
+          # Trim any trailing space from the string
+          test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
+          # Remove duplicate test class names
+          test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
+          # Output the string of test class names
+
+          # If any test class was missing, exit with an error
+          if [ "$missing_test_class" = true ]; then
+              exit 1
+          else
+              echo "Test classes found: $test_classes_string"
+          fi
+          if [ "$test_classes_string" = "" ]; then
+            sf project deploy start -d force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
+          else
+            sf project deploy start -d force-app/main/default -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
+          fi
+          echo "QA Validation is Successful"
+
+  salesforce-code-analyzer-v4:
+    name: SCA v4
+    needs: validation-with-code-coverage
     runs-on: ubuntu-latest
     steps:
       - name: Check out files
@@ -37,7 +105,9 @@ jobs:
           steps.run-code-analyzer.outputs.num-violations > 10
         run: exit 1
   
-  salesforce-code-analyzer2:
+  salesforce-code-analyzer-v5:
+    needs: validation-with-code-coverage
+    name: SCA v5
     runs-on: ubuntu-latest
     steps:
       - name: Check out files
