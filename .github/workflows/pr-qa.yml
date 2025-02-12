@@ -58,6 +58,7 @@ jobs:
               else
                   # Construct the expected test class name
                   test_class="${class}Test"
+                  echo "test_class name: $test_class"
                   # Check if the test class exists in only-apex-test-class.txt
                   if grep -q "^${test_class}$" only-apex-test-class.txt; then
                       # Append the test class name to the string
