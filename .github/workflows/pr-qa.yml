@@ -43,6 +43,7 @@ jobs:
           mkdir -p destructive
 
           # Copy the changed files into the new folder, preserving directory structure
+          git branch
 
           git diff  --diff-filter=AMR --name-only origin/qa..origin/WI-100001 -- force-app/ | xargs -I {} cp --parents {} package/
 
