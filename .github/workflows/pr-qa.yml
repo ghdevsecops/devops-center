@@ -9,6 +9,9 @@ on:
     branches: [qa]
     paths:
       - "force-app/main/default/**"
+env:
+  SOURCE_BRANCH: ${{ github.head_ref }}
+  TARGET_BRANCH: ${{ github.base_ref }}
 jobs:
   validation-with-code-coverage:
     name: Validation with Apex Code Coverage
@@ -17,72 +20,38 @@ jobs:
     container:
       image: salesforce/cli:latest-full
 
-    env:
-      SOURCE_BRANCH: ${{ github.head_ref }}
-      TARGET_BRANCH: ${{ github.base_ref }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0`
 
       - name: QA Authorization
         run: |
           echo ${{ secrets.AUTHURL_QA}} | sf org login sfdx-url -d -u
       
-      - name: Fetch Delta and Destructive Changes
-        shell: bash
-        run: |
-          
-          #git branch
-          git config --global --add safe.directory /__w/devops-center/devops-center
-          git fetch origin
-          git diff --diff-filter=AMR --name-only origin/qa..origin/WI-100001 -- force-app/
-          git diff --diff-filter=D --name-only origin/qa..origin/WI-100001 -- force-app/
-
-          # Create a new folder to store the changed files
-          mkdir -p package
-          mkdir -p destructive
-
-          # Copy the changed files into the new folder, preserving directory structure
-          
-
-          git diff  --diff-filter=AMR --name-only origin/qa..origin/WI-100001 -- force-app/ | xargs -I {} cp --parents {} package/
-
-          # Step 1: Get deleted files
-          git diff --name-only --diff-filter=D origin/qa..origin/WI-100001 -- force-app/ > deleted_files.txt
-
-          # Step 2: Get renamed files
-          git diff --name-status origin/qa..origin/WI-100001 -- force-app/ | grep -E "^R" > renamed_files.txt
-
-          # Step 3: Handle renamed files (create placeholders for the old file paths)
-          cat renamed_files.txt | while read line; do
-              old_file=$(echo $line | awk '{print $2}')
-              # Create the folder structure if it doesn't exist
-              mkdir -p "destructive/$(dirname $old_file)"
-              # Create the placeholder file
-              touch "destructive/$old_file"
-          done
-
-          # Step 4: Handle deleted files (create placeholders for deleted files)
-          cat deleted_files.txt | while read line; do
-              # Create the folder structure if it doesn't exist
-              mkdir -p "destructive/$(dirname $line)"
-              # Create the placeholder file
-              touch "destructive/$line"
-          done
-
       - name: Fetch Apex Class Names
         run: |
-          find package/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
-          find package/force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
-          chmod 777 all-apex-class.txt only-apex-test-class.txt
+          echo "y" | sf plugins install sfdx-git-delta
+          git config --global --add safe.directory /__w/devops-center/devops-center
+          git pull origin $TARGET_BRANCH
+          git pull origin $SOURCE_BRANCH
+          sf plugins --core
+          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
+          find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
+          find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
+          chmod 777 all-apex-class.txt
+          cat all-apex-class.txt
+          find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
+          chmod 777 only-apex-test-class.txt
+          cat only-apex-test-class.txt
+          
 
       - name: QA Validation
         shell: bash
         run: |
           echo "QA Validation Start"
+          
           #!/bin/bash
           test_classes_string=""
           missing_test_class=false
@@ -100,6 +69,7 @@ jobs:
               fi
           done < all-apex-class.txt
 
+
          
           test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
           test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
@@ -108,10 +78,15 @@ jobs:
           else
               echo "Test classes found: $test_classes_string"
           fi
+
+          
+
           if [ "$test_classes_string" = "" ]; then
-            sf project deploy validate -d package/force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
+            echo "INSIDE IF"
+            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
           else
-            sf project deploy validate -d package/force-app/main/default -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com --verbose -w 30 --ignore-conflicts
+            echo "INSIDE ELSE"
+            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
           fi
           echo "QA Validation is Successful"
 
