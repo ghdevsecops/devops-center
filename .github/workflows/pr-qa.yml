@@ -33,6 +33,7 @@ jobs:
       - name: Fetch Apex Class Names
         run: |
           echo "y" | sf plugins install sfdx-git-delta@5.0.0
+          git config --global --add safe.directory /__w/devops-center/devops-center
           git pull origin $TARGET_BRANCH
           git pull origin $SOURCE_BRANCH
           sf plugins --core
