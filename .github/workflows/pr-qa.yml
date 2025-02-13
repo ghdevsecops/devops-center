@@ -36,6 +36,8 @@ jobs:
         run: |
           
           #git branch
+          git config --global --add safe.directory /__w/devops-center/devops-center
+          git fetch origin
           git diff --diff-filter=AMR --name-only origin/qa..origin/WI-100001 -- force-app/
           git diff --diff-filter=D --name-only origin/qa..origin/WI-100001 -- force-app/
 
