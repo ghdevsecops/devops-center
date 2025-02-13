@@ -37,8 +37,8 @@ jobs:
           #git branch
           git config --global --add safe.directory /__w/devops-center/devops-center
           git fetch origin
-          git diff --diff-filter=AMR --name-only $TARGET_BRANCH..$SOURCE_BRANCH -- force-app/
-          git diff --diff-filter=D --name-only $TARGET_BRANCH..$SOURCE_BRANCH -- force-app/
+          git diff --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
+          git diff --diff-filter=D --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
 
           # Create a new folder to store the changed files
           mkdir -p package
@@ -47,13 +47,13 @@ jobs:
           # Copy the changed files into the new folder, preserving directory structure
           
 
-          git diff  --diff-filter=AMR --name-only $TARGET_BRANCH..$SOURCE_BRANCH -- force-app/ | xargs -I {} cp --parents {} package/
+          git diff  --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/ | xargs -I {} cp --parents {} package/
 
           # Step 1: Get deleted files
-          git diff --name-only --diff-filter=D $TARGET_BRANCH..$SOURCE_BRANCH -- force-app/ > deleted_files.txt
+          git diff --name-only --diff-filter=D origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/ > deleted_files.txt
 
           # Step 2: Get renamed files
-          git diff --name-status $TARGET_BRANCH..$SOURCE_BRANCH -- force-app/ | grep -E "^R" > renamed_files.txt
+          git diff --name-status origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/ | grep -E "^R" > renamed_files.txt
 
           # Step 3: Handle renamed files (create placeholders for the old file paths)
           cat renamed_files.txt | while read line; do
