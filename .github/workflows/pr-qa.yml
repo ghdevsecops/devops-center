@@ -75,7 +75,7 @@ jobs:
       - name: Fetch Apex Class Names
         run: |
           find package/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee all-apex-class.txt
-          find package/force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
+          find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' | tee only-apex-test-class.txt
           chmod 777 all-apex-class.txt only-apex-test-class.txt
 
       - name: QA Validation
