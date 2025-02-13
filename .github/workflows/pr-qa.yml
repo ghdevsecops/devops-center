@@ -82,8 +82,10 @@ jobs:
           
 
           if [ "$test_classes_string" = "" ]; then
+            echo "INSIDE IF"
             sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
           else
+            echo "INSIDE ELSE"
             sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
           fi
           echo "QA Validation is Successful"
