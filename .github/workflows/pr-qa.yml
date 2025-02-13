@@ -41,6 +41,9 @@ jobs:
           # git checkout $SOURCE_BRANCH
           pwd
           ls -a
+          git branch
+          
+          #!/bin/bash
           git diff --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
           git diff --diff-filter=D --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
 
