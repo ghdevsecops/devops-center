@@ -32,12 +32,12 @@ jobs:
       
       - name: Fetch Apex Class Names
         run: |
-          echo "y" | sf plugins install sfdx-git-delta@5.0.0
+          echo "y" | sf plugins install sfdx-git-delta
           git config --global --add safe.directory /__w/devops-center/devops-center
           git pull origin $TARGET_BRANCH
           git pull origin $SOURCE_BRANCH
           sf plugins --core
-          mkdir -p output & sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
+          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
           find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
           find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
           chmod 777 all-apex-class.txt
