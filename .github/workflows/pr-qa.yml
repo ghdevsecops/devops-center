@@ -38,7 +38,9 @@ jobs:
           git config --global --add safe.directory /__w/devops-center/devops-center
           git fetch origin
           git pull origin
-          git checkout origin 
+          git checkout qa
+          git pull origin qa
+          git checkout $SOURCE_BRANCH
           git diff --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
           git diff --diff-filter=D --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
 
