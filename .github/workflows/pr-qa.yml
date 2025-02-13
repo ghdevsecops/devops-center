@@ -120,6 +120,7 @@ jobs:
           ls -R package/force-app/main/default
 
           sf project generate manifest --source-dir package/force-app/main/default --type package --output-dir package
+          cat package/package.xml
           if [ "$test_classes_string" = "" ]; then
             sf project deploy validate --manifest  package/package.xml -o test-aqzkekn5j4iv@example.com -w 30 
           else
