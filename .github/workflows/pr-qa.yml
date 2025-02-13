@@ -41,7 +41,8 @@ jobs:
           # git checkout $SOURCE_BRANCH
           pwd
           ls -a
-          git pull origin WI-111
+          git pull origin $SOURCE_BRANCH
+          git pull origin $TARGET_BRANCH
           
           #!/bin/bash
           git diff --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
