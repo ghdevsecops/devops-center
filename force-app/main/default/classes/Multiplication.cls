@@ -1,5 +1,5 @@
 public class Multiplication {    
-    // Method to multiply two decimals
+    // Method to multiply two decimals only
     public static Decimal multiplyDecimals(Decimal a, Decimal b) {
         return a * b;
     }
