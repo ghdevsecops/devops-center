@@ -1,24 +1,18 @@
 @isTest
-private class FaultyCalculatorTest {
-    // SEV2 Issue: MethodNamingConventions
-    static void TestAddNumbers() {
-        FaultyCalculator calc = new FaultyCalculator();
-        calc.AddNumbers(2, 3);
-        // SEV3 Issue: SystemAssert
-        System.assertEquals(5, calc.Result);
+public class FaultyCalculatorTest {
+
+    @isTest
+    public static void testAdd() {
+        // Testing faulty addition
+        Integer result = FaultyCalculator.add(5, 3);
+        System.assertEquals(9, result, 'The add method should return 9, but it returned ' + result); // Expected: 8, but should return 9 due to the fault.
     }
 
-    // SEV1 Issue: MethodWithSameNameAsEnclosingClass
-    static void FaultyCalculatorTest() {
-        FaultyCalculator calc = new FaultyCalculator();
-        Integer result = calc.MultiplyNumbers(2, 3);
-        System.assertEquals(6, result);
+    @isTest
+    public static void testSubtract() {
+        // Testing faulty subtraction
+        Integer result = FaultyCalculator.subtract(5, 3);
+        System.assertEquals(1, result, 'The subtract method should return 1, but it returned ' + result); // Expected: 2, but should return 1 due to the fault.
     }
 
-    // SEV3 Issue: TestMethodWithoutIsTestAnnotation
-    static void TestComplexMethod() {
-        FaultyCalculator calc = new FaultyCalculator();
-        Integer result = calc.ComplexMethod(3, 2, 1);
-        System.assertEquals(3, result);
-    }
 }
