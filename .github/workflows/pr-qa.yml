@@ -33,10 +33,8 @@ jobs:
       - name: Fetch Delta and Destructive Changes
         shell: bash
         run: |
-          
-          git branch
           git config --global --add safe.directory /__w/devops-center/devops-center
-          git fetch origin
+          git fetch --all
           git pull origin
           git checkout qa
           git pull origin qa
