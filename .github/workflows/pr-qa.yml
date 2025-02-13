@@ -24,7 +24,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0`
 
       - name: QA Authorization
         run: |
@@ -33,13 +33,18 @@ jobs:
       - name: Fetch Apex Class Names
         run: |
           echo "y" | sf plugins install sfdx-git-delta@5.0.0
+          git pull origin $TARGET_BRANCH
+          git pull origin $SOURCE_BRANCH
+          sf plugins --core
           mkdir -p output & sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
-          find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > tee all-apex-class.txt
-          find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> tee all-apex-class.txt
+          find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
+          find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
+          chmod 777 all-apex-class.txt
           cat all-apex-class.txt
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
+          chmod 777 only-apex-test-class.txt
           cat only-apex-test-class.txt
-          chmod 777 all-apex-class.txt only-apex-test-class.txt
+          
 
       - name: QA Validation
         shell: bash
