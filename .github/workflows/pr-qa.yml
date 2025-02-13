@@ -119,9 +119,9 @@ jobs:
           echo "PACKAGE COMPONENTS"
           ls -R package/force-app/main/default
           if [ "$test_classes_string" = "" ]; then
-            sf project deploy validate -d package/force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 
+            sf project deploy validate -d package/force-app/main/default -o test-aqzkekn5j4iv@example.com -w 30 
           else
-            sf project deploy validate -d package/force-app/main/default -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com --verbose -w 30
+            sf project deploy validate -d package/force-app/main/default -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
           fi
           echo "QA Validation is Successful"
 
