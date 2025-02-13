@@ -5,10 +5,10 @@ public class MultiplicationTest {
         Integer  result1 = Multiplication.multiplyIntegers(3, 5);
         System.assertEquals(15, result1, 'the result is 15 in total');
         //first check
-        result1 =  Multiplication.multiplyIntegers(-3, 5);  //first check
+        result1 =  Multiplication.multiplyIntegers(-3, 5);  //first checking
         System.assertEquals(-15, result1, 'Multiplication of -3 & 5 will be -15 in total value');
         //second check
-        result1 =  Multiplication.multiplyIntegers(0, 11); //second check
+        result1 =  Multiplication.multiplyIntegers(0, 11); //second checking
         System.assertEquals(0, result1, 'Multiplication of 0 and 10 should be 0');
     }
     // Test method for multiplying decimals
