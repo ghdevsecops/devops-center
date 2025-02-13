@@ -117,7 +117,7 @@ jobs:
               echo "Test classes found: $test_classes_string"
           fi
           echo "PACKAGE COMPONENTS"
-          ls package/force-app/main/default
+          ls -R package/force-app/main/default
           if [ "$test_classes_string" = "" ]; then
             sf project deploy validate -d package/force-app/main/default -o test-aqzkekn5j4iv@example.com --verbose -w 30 
           else
