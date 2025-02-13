@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           
-          #git branch
+          git branch
           git config --global --add safe.directory /__w/devops-center/devops-center
           git fetch origin
           git pull origin
