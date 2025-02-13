@@ -33,12 +33,14 @@ jobs:
       - name: Fetch Delta and Destructive Changes
         shell: bash
         run: |
-          git config --global --add safe.directory /__w/devops-center/devops-center
-          git fetch --all
-          git pull origin
-          git checkout qa
-          git pull origin qa
-          git checkout $SOURCE_BRANCH
+          # git config --global --add safe.directory /__w/devops-center/devops-center
+          # git fetch --all
+          # git pull origin
+          # git checkout qa
+          # git pull origin qa
+          # git checkout $SOURCE_BRANCH
+          pwd
+          ls -a
           git diff --diff-filter=AMR --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
           git diff --diff-filter=D --name-only origin/$TARGET_BRANCH..origin/$SOURCE_BRANCH -- force-app/
 
