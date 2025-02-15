@@ -1,12 +1,12 @@
 @isTest
-public class MultiplicationServiceTest {
+public class MultiplicationTest {
     @isTest
     public static void testMultiplyNumbers() {
-        Integer result = MultiplicationService.multiplyNumbers(3, 4);
+        Integer result = Multiplication.multiplyNumbers(3, 4);
         System.assertEquals(12, result, 'Multiplication is incorrect');
         
         // Another test case
-        result = MultiplicationService.multiplyNumbers(5, 6);
+        result = Multiplication.multiplyNumbers(5, 6);
         System.assertEquals(30, result, 'Multiplication is incorrect');
     }
 }
