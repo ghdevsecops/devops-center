@@ -104,7 +104,14 @@ jobs:
         run: npm install -g @salesforce/cli@latest
 
       - name: Install Salesforce Code Analyzer v4.x CLI Plugin
-        run: sf plugins install @salesforce/sfdx-scanner@latest
+        run: |
+          sf plugins install @salesforce/sfdx-scanner@latest
+          echo "y" | sf plugins install sfdx-git-delta
+          git config --global --add safe.directory /__w/devops-center/devops-center
+          git pull origin $TARGET_BRANCH
+          git pull origin $SOURCE_BRANCH
+          sf plugins --core
+          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
 
       - name: Run Salesforce Code Analyzer
         id: run-code-analyzer
@@ -135,6 +142,12 @@ jobs:
       - name: Install Salesforce Code Analyzer v5.x CLI Plugin
         run: |
           sf plugins install code-analyzer@latest
+          echo "y" | sf plugins install sfdx-git-delta
+          git config --global --add safe.directory /__w/devops-center/devops-center
+          git pull origin $TARGET_BRANCH
+          git pull origin $SOURCE_BRANCH
+          sf plugins --core
+          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
           pwd
           ls -R .
 
