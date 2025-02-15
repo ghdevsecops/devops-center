@@ -45,7 +45,7 @@ jobs:
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
           chmod 777 only-apex-test-class.txt
           cat only-apex-test-class.txt
-          chmod 777 /output
+          chmod 777 output
           
 
       # - name: QA Validation
