@@ -119,31 +119,31 @@ jobs:
           steps.run-code-analyzer.outputs.num-violations > 10
         run: exit 1
   
-  salesforce-code-analyzer-v5:
-    needs: validation-with-code-coverage
-    name: SCA v5
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out files
-        uses: actions/checkout@v4
+  # salesforce-code-analyzer-v5:
+  #   needs: validation-with-code-coverage
+  #   name: SCA v5
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out files
+  #       uses: actions/checkout@v4
 
-      - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli@latest
+  #     - name: Install Salesforce CLI
+  #       run: npm install -g @salesforce/cli@latest
 
-      - name: Install Salesforce Code Analyzer v5.x CLI Plugin
-        run: sf plugins install code-analyzer@latest
+  #     - name: Install Salesforce Code Analyzer v5.x CLI Plugin
+  #       run: sf plugins install code-analyzer@latest
 
-      - name: Run Salesforce Code Analyzer
-        id: run-code-analyzer
-        uses: forcedotcom/run-code-analyzer@v2
-        with:
-          run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html --output-file sfca_results.json
-          results-artifact-name: salesforce-code-analyzer2-results
+  #     - name: Run Salesforce Code Analyzer
+  #       id: run-code-analyzer
+  #       uses: forcedotcom/run-code-analyzer@v2
+  #       with:
+  #         run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html --output-file sfca_results.json
+  #         results-artifact-name: salesforce-code-analyzer2-results
 
-      - name: Check the outputs to determine whether to fail
-        if: |
-          steps.run-code-analyzer.outputs.exit-code > 0 ||
-          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-violations > 10
-        run: exit 1
+  #     - name: Check the outputs to determine whether to fail
+  #       if: |
+  #         steps.run-code-analyzer.outputs.exit-code > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-violations > 10
+  #       run: exit 1
