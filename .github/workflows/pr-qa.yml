@@ -46,7 +46,24 @@ jobs:
           chmod 777 only-apex-test-class.txt
           cat only-apex-test-class.txt
           chmod 777 output
-          
+      - name: Install Salesforce Code Analyzer v4.x CLI Plugin
+        run: |
+          sf plugins install @salesforce/sfdx-scanner@latest
+
+      - name: Run Salesforce Code Analyzer
+        id: run-code-analyzer
+        uses: forcedotcom/run-code-analyzer@v1
+        with:
+          run-command: run
+          run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
+          results-artifact-name: salesforce-code-analyzer1-results
+
+      - name: Check the outputs to determine whether to fail
+        if: |
+          steps.run-code-analyzer.outputs.exit-code > 0 ||
+          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+          steps.run-code-analyzer.outputs.num-violations > 10
+        run: exit 1
 
       # - name: QA Validation
       #   shell: bash
@@ -92,76 +109,76 @@ jobs:
       #     echo "QA Validation is Successful"
       #     ls -R output/force-app/main/default
 
-  salesforce-code-analyzer-v4:
-    name: SCA v4
-    needs: validation-with-code-coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out files
-        uses: actions/checkout@v4
+  # salesforce-code-analyzer-v4:
+  #   name: SCA v4
+  #   needs: validation-with-code-coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out files
+  #       uses: actions/checkout@v4
 
-      - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli@latest
+  #     - name: Install Salesforce CLI
+  #       run: npm install -g @salesforce/cli@latest
 
-      - name: Install Salesforce Code Analyzer v4.x CLI Plugin
-        run: |
-          sf plugins install @salesforce/sfdx-scanner@latest
-          echo "y" | sf plugins install sfdx-git-delta
-          git config --global --add safe.directory /__w/devops-center/devops-center
-          git pull origin $TARGET_BRANCH
-          git pull origin $SOURCE_BRANCH
-          sf plugins --core
-          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
+  #     - name: Install Salesforce Code Analyzer v4.x CLI Plugin
+  #       run: |
+  #         sf plugins install @salesforce/sfdx-scanner@latest
+  #         echo "y" | sf plugins install sfdx-git-delta
+  #         git config --global --add safe.directory /__w/devops-center/devops-center
+  #         git pull origin $TARGET_BRANCH
+  #         git pull origin $SOURCE_BRANCH
+  #         sf plugins --core
+  #         sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
 
-      - name: Run Salesforce Code Analyzer
-        id: run-code-analyzer
-        uses: forcedotcom/run-code-analyzer@v1
-        with:
-          run-command: run
-          run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
-          results-artifact-name: salesforce-code-analyzer1-results
+  #     - name: Run Salesforce Code Analyzer
+  #       id: run-code-analyzer
+  #       uses: forcedotcom/run-code-analyzer@v1
+  #       with:
+  #         run-command: run
+  #         run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
+  #         results-artifact-name: salesforce-code-analyzer1-results
 
-      - name: Check the outputs to determine whether to fail
-        if: |
-          steps.run-code-analyzer.outputs.exit-code > 0 ||
-          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-violations > 10
-        run: exit 1
+  #     - name: Check the outputs to determine whether to fail
+  #       if: |
+  #         steps.run-code-analyzer.outputs.exit-code > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-violations > 10
+  #       run: exit 1
   
-  salesforce-code-analyzer-v5:
-    needs: validation-with-code-coverage
-    name: SCA v5
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out files
-        uses: actions/checkout@v4
+  # salesforce-code-analyzer-v5:
+  #   needs: validation-with-code-coverage
+  #   name: SCA v5
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out files
+  #       uses: actions/checkout@v4
 
-      - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli@latest
+  #     - name: Install Salesforce CLI
+  #       run: npm install -g @salesforce/cli@latest
 
-      - name: Install Salesforce Code Analyzer v5.x CLI Plugin
-        run: |
-          sf plugins install code-analyzer@latest
-          echo "y" | sf plugins install sfdx-git-delta
-          git config --global --add safe.directory /__w/devops-center/devops-center
-          git pull origin $TARGET_BRANCH
-          git pull origin $SOURCE_BRANCH
-          sf plugins --core
-          sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
-          pwd
-          ls -R .
+  #     - name: Install Salesforce Code Analyzer v5.x CLI Plugin
+  #       run: |
+  #         sf plugins install code-analyzer@latest
+  #         echo "y" | sf plugins install sfdx-git-delta
+  #         git config --global --add safe.directory /__w/devops-center/devops-center
+  #         git pull origin $TARGET_BRANCH
+  #         git pull origin $SOURCE_BRANCH
+  #         sf plugins --core
+  #         sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
+  #         pwd
+  #         ls -R .
 
-      - name: Run Salesforce Code Analyzer
-        id: run-code-analyzer
-        uses: forcedotcom/run-code-analyzer@v2
-        with:
-          run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html
-          results-artifact-name: salesforce-code-analyzer2-results
+  #     - name: Run Salesforce Code Analyzer
+  #       id: run-code-analyzer
+  #       uses: forcedotcom/run-code-analyzer@v2
+  #       with:
+  #         run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html
+  #         results-artifact-name: salesforce-code-analyzer2-results
 
-      - name: Check the outputs to determine whether to fail
-        if: |
-          steps.run-code-analyzer.outputs.exit-code > 0 ||
-          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-violations > 10
-        run: exit 1
+  #     - name: Check the outputs to determine whether to fail
+  #       if: |
+  #         steps.run-code-analyzer.outputs.exit-code > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-violations > 10
+  #       run: exit 1
