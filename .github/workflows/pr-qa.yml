@@ -38,13 +38,14 @@ jobs:
           git pull origin $SOURCE_BRANCH
           sf plugins --core
           sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
-          find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
-          find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
+          find /output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
+          find /output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
           chmod 777 all-apex-class.txt
           cat all-apex-class.txt
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
           chmod 777 only-apex-test-class.txt
           cat only-apex-test-class.txt
+          chmod 777 /output
           
 
       # - name: QA Validation
@@ -110,7 +111,7 @@ jobs:
         uses: forcedotcom/run-code-analyzer@v1
         with:
           run-command: run
-          run-arguments: --engine pmd,eslint --normalize-severity --target ./output/force-app/main/default/ --format html --outfile result1.html
+          run-arguments: --engine pmd,eslint --normalize-severity --target /output/force-app/main/default/ --format html --outfile result1.html
           results-artifact-name: salesforce-code-analyzer1-results
 
       - name: Check the outputs to determine whether to fail
@@ -138,7 +139,7 @@ jobs:
         id: run-code-analyzer
         uses: forcedotcom/run-code-analyzer@v2
         with:
-          run-arguments: --workspace ./output/force-app/main/default/ --view detail --output-file results2.html
+          run-arguments: --workspace /output/force-app/main/default/ --view detail --output-file sfca_results.html
           results-artifact-name: salesforce-code-analyzer2-results
 
       - name: Check the outputs to determine whether to fail
