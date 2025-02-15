@@ -1,12 +1,6 @@
-public class Multiplication {    
-    // Method to multiply two decimals
-    public static Decimal multiplyDecimals(Decimal a, Decimal b) {
-        return a * b;
+public class MultiplicationService {
+    public static Integer multiplyNumbers(Integer num1, Integer num2) {
+        // No comments, PMD would flag for lack of documentation
+        return num1 * num2;
     }
-    // Method to multiply two integer numbers
-    public static Integer multiplyIntegers(Integer a, Integer b) {
-        return a * b;
-    }
-
-    
 }
