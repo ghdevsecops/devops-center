@@ -110,7 +110,7 @@ jobs:
         uses: forcedotcom/run-code-analyzer@v1
         with:
           run-command: run
-          run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
+          run-arguments: --engine pmd,eslint --normalize-severity --target ./output/force-app/main/default/ --format html --outfile result1.html
           results-artifact-name: salesforce-code-analyzer1-results
 
       - name: Check the outputs to determine whether to fail
@@ -138,7 +138,7 @@ jobs:
         id: run-code-analyzer
         uses: forcedotcom/run-code-analyzer@v2
         with:
-          run-arguments: --workspace output/force-app/main/default/ --view detail --output-file results2.html
+          run-arguments: --workspace ./output/force-app/main/default/ --view detail --output-file results2.html
           results-artifact-name: salesforce-code-analyzer2-results
 
       - name: Check the outputs to determine whether to fail
