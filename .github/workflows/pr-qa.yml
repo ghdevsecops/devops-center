@@ -38,8 +38,8 @@ jobs:
           git pull origin $SOURCE_BRANCH
           sf plugins --core
           sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
-          find /output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
-          find /output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
+          find output/force-app/main/default/classes -name '*.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > all-apex-class.txt
+          find output/force-app/main/default/classes -name '*.trigger' -type f | xargs -n 1 basename | sed 's/.trigger//' >> all-apex-class.txt
           chmod 777 all-apex-class.txt
           cat all-apex-class.txt
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
