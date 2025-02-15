@@ -136,7 +136,7 @@ jobs:
         run: |
           sf plugins install code-analyzer@latest
           pwd
-          ls -R output   
+          ls -R .
 
       - name: Run Salesforce Code Analyzer
         id: run-code-analyzer
