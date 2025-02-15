@@ -45,105 +45,159 @@ jobs:
           find force-app/main/default/classes -name '*Test.cls' -type f | xargs -n 1 basename | sed 's/.cls//' > only-apex-test-class.txt
           chmod 777 only-apex-test-class.txt
           cat only-apex-test-class.txt
-          
+          chmod 777 output
+      # - name: Install Salesforce Code Analyzer v4.x CLI Plugin
+      #   run: |
+      #     sf plugins install @salesforce/sfdx-scanner@latest
 
-      - name: QA Validation
-        shell: bash
+      # - name: Run Salesforce Code Analyzer
+      #   id: run-code-analyzer
+      #   uses: forcedotcom/run-code-analyzer@v1
+      #   with:
+      #     run-command: run
+      #     run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
+      #     results-artifact-name: salesforce-code-analyzer1-results
+
+      # - name: Check the outputs to determine whether to fail
+      #   if: |
+      #     steps.run-code-analyzer.outputs.exit-code > 0 ||
+      #     steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+      #     steps.run-code-analyzer.outputs.num-violations > 10
+      #   run: exit 1
+      
+      - name: Install Salesforce Code Analyzer v5.x CLI Plugin
         run: |
-          echo "QA Validation Start"
+          sf plugins install code-analyzer@latest
+
+      - name: Run Salesforce Code Analyzer
+        id: run-code-analyzer2
+        uses: forcedotcom/run-code-analyzer@v2
+        with:
+          run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html
+          results-artifact-name: salesforce-code-analyzer2-results
+
+      - name: Check the outputs to determine whether to fail 
+        if: |
+          steps.run-code-analyzer2.outputs.exit-code > 0 ||
+          steps.run-code-analyzer2.outputs.num-sev1-violations > 0 ||
+          steps.run-code-analyzer2.outputs.num-sev2-violations > 0 ||
+          steps.run-code-analyzer2.outputs.num-violations > 10
+        run: exit 1
+
+      # - name: QA Validation
+      #   shell: bash
+      #   run: |
+      #     echo "QA Validation Start"
           
-          #!/bin/bash
-          test_classes_string=""
-          missing_test_class=false
-          while IFS= read -r class || [ -n "$class" ]; do
-              if [[ "$class" == *Test ]]; then
-                  test_classes_string+="${class} "
-              else
-                  test_class="${class}Test"
-                  if grep -q "^${test_class}$" only-apex-test-class.txt; then
-                      test_classes_string+="${test_class} "
-                  else
-                      echo "Error: Test class for ${class} is missing."
-                      missing_test_class=true
-                  fi             
-              fi
-          done < all-apex-class.txt
+      #     #!/bin/bash
+      #     test_classes_string=""
+      #     missing_test_class=false
+      #     while IFS= read -r class || [ -n "$class" ]; do
+      #         if [[ "$class" == *Test ]]; then
+      #             test_classes_string+="${class} "
+      #         else
+      #             test_class="${class}Test"
+      #             if grep -q "^${test_class}$" only-apex-test-class.txt; then
+      #                 test_classes_string+="${test_class} "
+      #             else
+      #                 echo "Error: Test class for ${class} is missing."
+      #                 missing_test_class=true
+      #             fi             
+      #         fi
+      #     done < all-apex-class.txt
 
 
          
-          test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
-          test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
-          if [ "$missing_test_class" = true ]; then
-              exit 1
-          else
-              echo "Test classes found: $test_classes_string"
-          fi
+      #     test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
+      #     test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
+      #     if [ "$missing_test_class" = true ]; then
+      #         exit 1
+      #     else
+      #         echo "Test classes found: $test_classes_string"
+      #     fi
 
           
 
-          if [ "$test_classes_string" = "" ]; then
-            echo "INSIDE IF"
-            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
-          else
-            echo "INSIDE ELSE"
-            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
-          fi
-          echo "QA Validation is Successful"
+      #     if [ "$test_classes_string" = "" ]; then
+      #       echo "INSIDE IF"
+      #       sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
+      #     else
+      #       echo "INSIDE ELSE"
+      #       sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
+      #     fi
+      #     echo "QA Validation is Successful"
+      #     ls -R output/force-app/main/default
 
-  salesforce-code-analyzer-v4:
-    name: SCA v4
-    needs: validation-with-code-coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out files
-        uses: actions/checkout@v4
+  # salesforce-code-analyzer-v4:
+  #   name: SCA v4
+  #   needs: validation-with-code-coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out files
+  #       uses: actions/checkout@v4
 
-      - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli@latest
+  #     - name: Install Salesforce CLI
+  #       run: npm install -g @salesforce/cli@latest
 
-      - name: Install Salesforce Code Analyzer v4.x CLI Plugin
-        run: sf plugins install @salesforce/sfdx-scanner@latest
+  #     - name: Install Salesforce Code Analyzer v4.x CLI Plugin
+  #       run: |
+  #         sf plugins install @salesforce/sfdx-scanner@latest
+  #         echo "y" | sf plugins install sfdx-git-delta
+  #         git config --global --add safe.directory /__w/devops-center/devops-center
+  #         git pull origin $TARGET_BRANCH
+  #         git pull origin $SOURCE_BRANCH
+  #         sf plugins --core
+  #         sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
 
-      - name: Run Salesforce Code Analyzer
-        id: run-code-analyzer
-        uses: forcedotcom/run-code-analyzer@v1
-        with:
-          run-command: run
-          run-arguments: --engine pmd,eslint --normalize-severity --target force-app/main/default --outfile results.html
-          results-artifact-name: salesforce-code-analyzer1-results
+  #     - name: Run Salesforce Code Analyzer
+  #       id: run-code-analyzer
+  #       uses: forcedotcom/run-code-analyzer@v1
+  #       with:
+  #         run-command: run
+  #         run-arguments: --engine pmd,eslint --normalize-severity --target output/force-app/main/default/ --format html --outfile result1.html
+  #         results-artifact-name: salesforce-code-analyzer1-results
 
-      - name: Check the outputs to determine whether to fail
-        if: |
-          steps.run-code-analyzer.outputs.exit-code > 0 ||
-          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-violations > 10
-        run: exit 1
+  #     - name: Check the outputs to determine whether to fail
+  #       if: |
+  #         steps.run-code-analyzer.outputs.exit-code > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-violations > 10
+  #       run: exit 1
   
-  salesforce-code-analyzer-v5:
-    needs: validation-with-code-coverage
-    name: SCA v5
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out files
-        uses: actions/checkout@v4
+  # salesforce-code-analyzer-v5:
+  #   needs: validation-with-code-coverage
+  #   name: SCA v5
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check out files
+  #       uses: actions/checkout@v4
 
-      - name: Install Salesforce CLI
-        run: npm install -g @salesforce/cli@latest
+  #     - name: Install Salesforce CLI
+  #       run: npm install -g @salesforce/cli@latest
 
-      - name: Install Salesforce Code Analyzer v5.x CLI Plugin
-        run: sf plugins install code-analyzer@latest
+  #     - name: Install Salesforce Code Analyzer v5.x CLI Plugin
+  #       run: |
+  #         sf plugins install code-analyzer@latest
+  #         echo "y" | sf plugins install sfdx-git-delta
+  #         git config --global --add safe.directory /__w/devops-center/devops-center
+  #         git pull origin $TARGET_BRANCH
+  #         git pull origin $SOURCE_BRANCH
+  #         sf plugins --core
+  #         sf sgd source delta --from "origin/$TARGET_BRANCH" --to "origin/$SOURCE_BRANCH" --generate-delta
+  #         pwd
+  #         ls -R .
 
-      - name: Run Salesforce Code Analyzer
-        id: run-code-analyzer
-        uses: forcedotcom/run-code-analyzer@v2
-        with:
-          run-arguments: --workspace force-app/main/default --view detail --output-file sfca_results.html --output-file sfca_results.json
-          results-artifact-name: salesforce-code-analyzer2-results
+  #     - name: Run Salesforce Code Analyzer
+  #       id: run-code-analyzer
+  #       uses: forcedotcom/run-code-analyzer@v2
+  #       with:
+  #         run-arguments: --workspace output/force-app/main/default/ --view detail --output-file sfca_results.html
+  #         results-artifact-name: salesforce-code-analyzer2-results
 
-      - name: Check the outputs to determine whether to fail
-        if: |
-          steps.run-code-analyzer.outputs.exit-code > 0 ||
-          steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
-          steps.run-code-analyzer.outputs.num-violations > 10
-        run: exit 1
+  #     - name: Check the outputs to determine whether to fail
+  #       if: |
+  #         steps.run-code-analyzer.outputs.exit-code > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev1-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-sev2-violations > 0 ||
+  #         steps.run-code-analyzer.outputs.num-violations > 10
+  #       run: exit 1
