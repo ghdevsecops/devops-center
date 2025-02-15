@@ -89,6 +89,7 @@ jobs:
             sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
           fi
           echo "QA Validation is Successful"
+          ls -R output/force-app/main/default
 
   salesforce-code-analyzer-v4:
     name: SCA v4
