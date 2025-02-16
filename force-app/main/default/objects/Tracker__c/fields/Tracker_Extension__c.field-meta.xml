@@ -5,8 +5,9 @@
     <label>Tracker Extension</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
-    <description>Extension type</description>
+    
     <trackTrending>false</trackTrending>
+    <description>Extension type</description>
     <type>TextArea</type>
     <unique>false</unique>
 </CustomField>
