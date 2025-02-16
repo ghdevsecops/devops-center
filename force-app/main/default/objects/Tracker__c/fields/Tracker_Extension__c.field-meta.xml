@@ -6,6 +6,7 @@
     <length>150</length>
     <required>false</required>
     <trackHistory>false</trackHistory>
+    <description>Extension type</description>
     <trackTrending>false</trackTrending>
     <type>TextArea</type>
     <unique>false</unique>
