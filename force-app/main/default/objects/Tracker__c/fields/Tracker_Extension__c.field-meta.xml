@@ -3,11 +3,18 @@
     <fullName>Tracker_Extension__c</fullName>
     <externalId>false</externalId>
     <label>Tracker Extension</label>
-    <required>false</required>
+    
+
+
+
+
+
+    <required>true</required>
     <trackHistory>false</trackHistory>
     
     <trackTrending>false</trackTrending>
-    <description>Tracker is an custom field Extension type</description>
+   
     <type>TextArea</type>
+    <description>This is a tracker extension custom field</description>
     <unique>false</unique>
 </CustomField>
