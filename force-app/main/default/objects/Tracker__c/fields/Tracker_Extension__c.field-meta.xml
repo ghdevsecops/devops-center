@@ -3,7 +3,7 @@
     <fullName>Tracker_Extension__c</fullName>
     <externalId>false</externalId>
     <label>Tracker Extension</label>
-    <required>false</required>
+    <required>true</required>
     <trackHistory>false</trackHistory>
     
     <trackTrending>false</trackTrending>
