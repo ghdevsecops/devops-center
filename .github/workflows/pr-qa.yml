@@ -84,49 +84,49 @@ jobs:
           steps.run-code-analyzer2.outputs.num-violations > 10
         run: exit 1
 
-      # - name: QA Validation
-      #   shell: bash
-      #   run: |
-      #     echo "QA Validation Start"
+      - name: QA Validation
+        shell: bash
+        run: |
+          echo "QA Validation Start"
           
-      #     #!/bin/bash
-      #     test_classes_string=""
-      #     missing_test_class=false
-      #     while IFS= read -r class || [ -n "$class" ]; do
-      #         if [[ "$class" == *Test ]]; then
-      #             test_classes_string+="${class} "
-      #         else
-      #             test_class="${class}Test"
-      #             if grep -q "^${test_class}$" only-apex-test-class.txt; then
-      #                 test_classes_string+="${test_class} "
-      #             else
-      #                 echo "Error: Test class for ${class} is missing."
-      #                 missing_test_class=true
-      #             fi             
-      #         fi
-      #     done < all-apex-class.txt
+          #!/bin/bash
+          test_classes_string=""
+          missing_test_class=false
+          while IFS= read -r class || [ -n "$class" ]; do
+              if [[ "$class" == *Test ]]; then
+                  test_classes_string+="${class} "
+              else
+                  test_class="${class}Test"
+                  if grep -q "^${test_class}$" only-apex-test-class.txt; then
+                      test_classes_string+="${test_class} "
+                  else
+                      echo "Error: Test class for ${class} is missing."
+                      missing_test_class=true
+                  fi             
+              fi
+          done < all-apex-class.txt
 
 
          
-      #     test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
-      #     test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
-      #     if [ "$missing_test_class" = true ]; then
-      #         exit 1
-      #     else
-      #         echo "Test classes found: $test_classes_string"
-      #     fi
+          test_classes_string=$(echo "$test_classes_string" | sed 's/ $//')
+          test_classes_string=$(echo "$test_classes_string" | awk '{for(i=1;i<=NF;i++) if(!seen[$i]++) printf "%s ", $i; print ""}')
+          if [ "$missing_test_class" = true ]; then
+              exit 1
+          else
+              echo "Test classes found: $test_classes_string"
+          fi
 
           
 
-      #     if [ "$test_classes_string" = "" ]; then
-      #       echo "INSIDE IF"
-      #       sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
-      #     else
-      #       echo "INSIDE ELSE"
-      #       sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
-      #     fi
-      #     echo "QA Validation is Successful"
-      #     ls -R output/force-app/main/default
+          if [ "$test_classes_string" = "" ]; then
+            echo "INSIDE IF"
+            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -o test-aqzkekn5j4iv@example.com -w 30 
+          else
+            echo "INSIDE ELSE"
+            sf project deploy validate -x output/package/package.xml --post-destructive-changes output/destructiveChanges/destructiveChanges.xml -l RunSpecifiedTests -t $test_classes_string -o test-aqzkekn5j4iv@example.com -w 30
+          fi
+          echo "QA Validation is Successful"
+
 
   # salesforce-code-analyzer-v4:
   #   name: SCA v4
